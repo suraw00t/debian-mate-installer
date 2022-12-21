@@ -1,0 +1,154 @@
+call plug#begin()
+Plug 'preservim/nerdtree', { 'on':  'NERDTreeToggle' }
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'PhilRunninger/nerdtree-buffer-ops'
+Plug 'PhilRunninger/nerdtree-visual-selection'
+Plug 'mattn/emmet-vim'
+Plug 'skammer/vim-css-color'
+Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'yuezk/vim-js'
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'vim-autoformat/vim-autoformat'
+"Plug 'jmcantrell/vim-virtualenv'
+Plug 'rhysd/vim-clang-format'
+"Plug 'kana/vim-operator-user'
+"Plug 'neoclide/vim-jsx-improve'
+"Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+"Plug 'jparise/vim-graphql'
+"Plug 'vim-python/python-syntax'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'psf/black', { 'branch': 'stable' }
+Plug 'mhartington/oceanic-next'
+Plug 'jacoborus/tender.vim'
+Plug 'glepnir/oceanic-material'
+Plug 'liuchengxu/space-vim-dark'
+Plug 'NLKNguyen/papercolor-theme'
+Plug 'tpope/vim-fugitive'
+Plug 'rafi/awesome-vim-colorschemes'
+Plug 'APZelos/blamer.nvim'
+call plug#end()
+
+let NERDTreeMinimalUI=1
+let g:autoformat_verbosemode=1
+set clipboard=unnamedplus
+set mouse=a
+set encoding=UTF-8
+set number
+nnoremap <leader>n :NERDTreeToggle<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+set guifont=SFMono_Nerd_Font:h11
+filetype plugin indent on
+set autoindent
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set t_Co=256
+set cursorline
+syntax on
+"colorscheme OceanicNext
+"
+set background=dark
+colorscheme onedark
+"colorscheme PaperColor
+"
+"colorscheme space-vim-dark
+"color space-vim-dark
+"set termguicolors
+hi Comment cterm=italic
+"hi Normal     ctermbg=NONE guibg=NONE
+"hi LineNr     ctermbg=NONE guibg=NONE
+"hi SignColumn ctermbg=NONE guibg=NONE
+"hi Comment guifg=#5C6370 ctermfg=59
+"
+"set background=dark
+"colorscheme oceanic_material
+"let g:airline_theme='tender'
+"let g:airline_theme='murmur'
+"let g:airline_theme='badwolf'
+let g:airline_theme='bubblegum'
+"let g:airline_theme='minimalist'
+"let g:airline_theme='luna'
+let g:airline_detect_modified = 1
+let g:airline#extensions#syntastic#enabled = 1
+let g:airline_powerline_fonts = 1
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
+" airline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+
+" Enable the list of buffers
+let g:airline#extensions#tabline#enabled = 1
+" let g:airline#extensions#tabline#show_buffers = 1
+let g:airline#extensions#tabline#show_tabs = 1
+
+" Show just the filename
+let g:airline#extensions#tabline#fnamemod = ':t'
+
+" enable/disable fugitive/lawrencium integration
+" let g:airline#extensions#branch#enabled = 1
+
+" enable/disable showing a summary of changed hunks under source control.
+" let g:airline#extensions#hunks#enabled = 1
+
+" enable/disable showing only non-zero hunks.
+" let g:airline#extensions#hunks#non_zero_only = 1
+
+" let g:airline#extensions#whitespace#enabled = 0
+let g:airline#extensions#tabline#show_splits = 0
+
+let g:airline#extensions#virtualenv#enabled = 1
+let g:airline#extensions#poetv#enabled = 1
+
+" let g:formatdef_eslint = '"SRC=eslint-temp-${RANDOM}.js; cat - >$SRC; eslint --fix $SRC >/dev/null 2>&1; cat $SRC | perl -pe \"chomp if eof\"; rm -f $SRC"'
+let g:formatters_javascript = ['eslint']
+let g:syntastic_javascript_checkers = ['eslint']
+
+let g:blamer_enabled = 1
+
+nnoremap <F9> :Black<CR>
+augroup black_on_save
+  autocmd!
+  autocmd BufWritePre *.py Black
+augroup end
+
+augroup format_on_save
+ " set smartindent
+ " au BufWrite *.c Autoformat
+ " au BufWrite *.cpp Autoformat
+ " au BufWrite *.java Autoformat
+  au BufWrite *.js Autoformat
+  autocmd BufWritePre *.c ClangFormat
+  autocmd BufWritePre *.cpp Clangformat
+  autocmd BufWritePre *.java Clangformat
+augroup end

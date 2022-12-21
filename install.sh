@@ -11,7 +11,7 @@ sudo apt install -y python3 python3-pip python3-venv python3-tk gnome-disk-utili
     vim vim-nox mate-tweak mate-applet-appmenu mate-applet-brisk-menu slick-greeter gnome-software-flatpak-plugin \
     tilix tmux wget curl xfonts-thai fonts-nanum ttf-mscorefonts-installer rar unrar 7zip ssh filezilla grub-customizer \
     caja-open-terminal caja-admin wireplumber nodejs npm git zsh vlc gparted thunderbird rhythmbox screen intel-microcode \
-    primus-vk-nvidia firmware-iwlwifi obs-studio
+    primus-vk-nvidia firmware-iwlwifi obs-studio xournal
 
 echo "Rebooting system"
 sudo shutdown -r now
