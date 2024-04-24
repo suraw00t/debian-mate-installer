@@ -1,4 +1,8 @@
+set nocompatible
+
 call plug#begin()
+" Plug 'sheerun/vim-polyglot'
+Plug 'dense-analysis/ale'
 Plug 'preservim/nerdtree', { 'on':  'NERDTreeToggle' }
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ryanoasis/vim-devicons'
@@ -6,26 +10,32 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'PhilRunninger/nerdtree-buffer-ops'
 Plug 'PhilRunninger/nerdtree-visual-selection'
 Plug 'mattn/emmet-vim'
-Plug 'skammer/vim-css-color'
 Plug 'pangloss/vim-javascript'
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'yuezk/vim-js'
+Plug 'neoclide/vim-jsx-improve'
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'npm install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'vim-autoformat/vim-autoformat'
+Plug 'google/vim-maktaba'
+Plug 'google/vim-codefmt'
+Plug 'google/vim-glaive'
 "Plug 'jmcantrell/vim-virtualenv'
 Plug 'rhysd/vim-clang-format'
 "Plug 'kana/vim-operator-user'
-"Plug 'neoclide/vim-jsx-improve'
 "Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 "Plug 'jparise/vim-graphql'
 "Plug 'vim-python/python-syntax'
-Plug 'sonph/onehalf', { 'rtp': 'vim' }
+"Plug 'sonph/onehalf', { 'rtp': 'vim' }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'psf/black', { 'branch': 'stable' }
+" Plug 'psf/black', { 'branch': 'stable' }
+" Plug 'astral-sh/ruff'
 Plug 'mhartington/oceanic-next'
 Plug 'jacoborus/tender.vim'
 Plug 'glepnir/oceanic-material'
@@ -34,14 +44,31 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'tpope/vim-fugitive'
 Plug 'rafi/awesome-vim-colorschemes'
 Plug 'APZelos/blamer.nvim'
+"Plug 'normen/vim-pio'
+" Plug 'yaegassy/coc-tailwindcss3', {'do': 'npm install --frozen-lockfile'}
+"Plug 'mhinz/vim-signify'
+"Plug 'tpope/vim-fugitive'
+"Plug 'yaegassy/coc-htmldjango', {'do': 'npm install --frozen-lockfile'}
+"Python plugin
+"Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+Plug 'nathanaelkane/vim-indent-guides'
+Plug 'Yggdroot/indentLine'
+"Plug 'python-mode/python-mode', { 'for': 'python', 'branch': 'develop' }
+"Plug 'davidodenwald/prettier-plugin-jinja-template'
+Plug 'christoomey/vim-tmux-navigator'
 call plug#end()
 
 let NERDTreeMinimalUI=1
 let g:autoformat_verbosemode=1
-set clipboard=unnamedplus
+
+" Disable quote concealing in JSON files
+let g:vim_json_conceal=0
+set clipboard^=unnamed,unnamedplus
 set mouse=a
 set encoding=UTF-8
 set number
+"set listchars=tab:\|\ 
+"set list
 nnoremap <leader>n :NERDTreeToggle<CR>
 nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
@@ -49,18 +76,16 @@ nnoremap <C-f> :NERDTreeFind<CR>
 set guifont=SFMono_Nerd_Font:h11
 filetype plugin indent on
 set autoindent
+set smartindent
 set tabstop=4
 set shiftwidth=4
-set expandtab
+"set expandtab
 set t_Co=256
 set cursorline
 syntax on
-"colorscheme OceanicNext
-"
-set background=dark
-colorscheme onedark
-"colorscheme PaperColor
-"
+colorscheme OceanicNext
+"set background=dark
+" colorscheme PaperColor
 "colorscheme space-vim-dark
 "color space-vim-dark
 "set termguicolors
@@ -75,7 +100,8 @@ hi Comment cterm=italic
 "let g:airline_theme='tender'
 "let g:airline_theme='murmur'
 "let g:airline_theme='badwolf'
-let g:airline_theme='bubblegum'
+"let g:airline_theme='bubblegum'
+let g:airline_theme='onehalfdark'
 "let g:airline_theme='minimalist'
 "let g:airline_theme='luna'
 let g:airline_detect_modified = 1
@@ -113,7 +139,7 @@ let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_tabs = 1
 
 " Show just the filename
-let g:airline#extensions#tabline#fnamemod = ':t'
+" let g:airline#extensions#tabline#fnamemod = ':t'
 
 " enable/disable fugitive/lawrencium integration
 " let g:airline#extensions#branch#enabled = 1
@@ -127,28 +153,115 @@ let g:airline#extensions#tabline#fnamemod = ':t'
 " let g:airline#extensions#whitespace#enabled = 0
 let g:airline#extensions#tabline#show_splits = 0
 
-let g:airline#extensions#virtualenv#enabled = 1
+" let g:airline#extensions#virtualenv#enabled = 1
 let g:airline#extensions#poetv#enabled = 1
 
+let g:airline#extensions#tabline#show_buffers = 0
+" let g:airline#extensions#tabline#close_symbol = '×'
+" let g:airline#extensions#tabline#show_close_button = 0
+
+" Set this. Airline will handle the rest.
+let g:airline#extensions#ale#enabled = 1
+
 " let g:formatdef_eslint = '"SRC=eslint-temp-${RANDOM}.js; cat - >$SRC; eslint --fix $SRC >/dev/null 2>&1; cat $SRC | perl -pe \"chomp if eof\"; rm -f $SRC"'
-let g:formatters_javascript = ['eslint']
-let g:syntastic_javascript_checkers = ['eslint']
+" let g:formatters_javascript = ['eslint']
+" let g:syntastic_javascript_checkers = ['eslint']
 
 let g:blamer_enabled = 1
+let g:blamer_prefix = ' > '
+let g:blamer_show_in_insert_modes = 0
+let g:blamer_show_in_visual_modes = 0
 
-nnoremap <F9> :Black<CR>
-augroup black_on_save
-  autocmd!
-  autocmd BufWritePre *.py Black
-augroup end
+let g:indentLine_enabled = 1
+let g:indent_guides_enable_on_vim_startup = 0
+let g:indent_guides_auto_colors = 1
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=red   ctermbg=3
+"autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=green ctermbg=4
+
+" nnoremap <F9> :Black<CR>
+"augroup black_on_save
+"  autocmd!
+"  autocmd BufWritePre *.py Black
+"augroup end
 
 augroup format_on_save
  " set smartindent
  " au BufWrite *.c Autoformat
  " au BufWrite *.cpp Autoformat
  " au BufWrite *.java Autoformat
-  au BufWrite *.js Autoformat
-  autocmd BufWritePre *.c ClangFormat
-  autocmd BufWritePre *.cpp Clangformat
-  autocmd BufWritePre *.java Clangformat
+  autocmd!
+  au BufWrite html,js :Autoformat
+  "autocmd BufWritePre html,css,sass,scss,less,json AutoFormatBuffer js-beautify
+ " autocmd FileType html,css,sass,scss,less,json AutoFormatBuffer js-beautify
+ " au BufWritePre *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html Prettier
+"  autocmd BufWritePre *.c ClangFormat
+"  autocmd BufWritePre *.cpp Clangformat
+"  autocmd BufWritePre *.java Clangformat
 augroup end
+
+" comment line, selection with Ctrl-N,Ctrl-N
+" au BufEnter *.py nnoremap  <C-N><C-N>    mn:s/^\(\s*\)#*\(.*\)/\1#\2/ge<CR>:noh<CR>`n
+" au BufEnter *.py inoremap  <C-N><C-N>    <C-O>mn<C-O>:s/^\(\s*\)#*\(.*\)/\1#\2/ge<CR><C-O>:noh<CR><C-O>`n
+" au BufEnter *.py vnoremap  <C-N><C-N>    mn:s/^\(\s*\)#*\(.*\)/\1#\2/ge<CR>:noh<CR>gv`n
+
+" uncomment line, selection with Ctrl-N,N
+" au BufEnter *.py nnoremap  <C-N>n     mn:s/^\(\s*\)#\([^ ]\)/\1\2/ge<CR>:s/^#$//ge<CR>:noh<CR>`n
+" au BufEnter *.py inoremap  <C-N>n     <C-O>mn<C-O>:s/^\(\s*\)#\([^ ]\)/\1\2/ge<CR><C-O>:s/^#$//ge<CR><C-O>:noh<CR><C-O>`n
+" au BufEnter *.py vnoremap  <C-N>n     mn:s/^\(\s*\)#\([^ ]\)/\1\2/ge<CR>gv:s/#\n/\r/ge<CR>:noh<CR>gv`n
+
+
+au BufEnter *.py vnoremap <silent> <C-k> :s#^#\##<cr>:noh<cr>
+au BufEnter *.py vnoremap <silent> <C-u> :s#^\###<cr>:noh<cr>
+vnoremap <silent> # :s/^/#/<cr>:noh<cr>
+vnoremap <silent> -# :s/^#//<cr>:noh<cr>
+" in NERDTree, to open-silently file in newtab with Enter, instead of default pressing "T" (same for not silently with Tab instead of t)
+" let NERDTreeMapOpenInTab='<ENTER>'
+" let NERDTreeMapOpenInTab='<TAB>'
+" let NERDTreeMapOpenInTabSilent='<ENTER>'
+let NERDTreeShowHidden=1
+"let NERDTreeIgnore=[".git"]
+
+" 'python': ['flake8', 'pylint', 'autopep8'],
+let g:ale_linters = {
+			\ 'python': ['ruff'],
+			\ 'javascript': ['prettier', 'eslint'],
+			\ 'typescript': ['prettier', 'eslint'],
+			\ 'html': ['prettier'],
+			\ 'css': ['prettier'],
+			\ 'ansible': ['ansible-lint'],
+			\ 'c': ['clang'],
+			\ 'cpp': ['clang'],
+			\ 'dockerfile': ['dprint']
+\}
+let g:ale_fixers = {
+			\ 'python': ['black', 'ruff_format'],
+			\ 'javascript': ['prettier', 'eslint'],
+			\ 'typescript': ['prettier', 'eslint'],
+			\ 'c': ['clang-format'],
+			\ 'cpp': ['astyle'],
+			\ 'go': ['gofmt'],
+\}
+" let g:ale_disable_lsp = 1
+" let g:ale_python_fuff_format_options="--max-line-length=120"
+" let g:ale_python_flake8_options="--max-line-length=120"
+" let g:ale_python_pylint_options="--max-line-length=120"
+" let g:ale_python_autopep8_options="--max-line-length=120"
+let g:ale_javascript_eslint_executable = 'eslint'
+let g:ale_javascript_eslint_options = ''
+let g:ale_javascript_eslint_suppress_eslintignore = 1
+let g:ale_javascript_eslint_suppress_missing_config = 1
+" let g:ale_statusline_format = ['❌ %d', '⚡︎%d', '']
+"let g:ale_sign_style_error = '❌'
+"let g:ale_sign_style_warning = '⚡︎'
+"let g:ale_sign_warning = 'W'
+"let g:ale_echo_msg_error_str = 'Error'
+"let g:ale_echo_msg_warning_str = 'Warning'
+let g:ale_fix_on_save = 1
+
+" when running at every change you may want to disable quickfix
+"let g:prettier#quickfix_enabled = 0
+
+"autocmd TextChanged,InsertLeave *.js,*.jsx,*.mjs,*.ts,*.tsx,*.css,*.less,*.scss,*.json,*.graphql,*.md,*.vue,*.svelte,*.yaml,*.html PrettierAsync
+"
+highlight ALEError ctermbg=Red cterm=underline 
+highlight ALEWarning ctermbg=none cterm=underline
